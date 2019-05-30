@@ -1,0 +1,23 @@
+{
+  "name": "lt-utils",
+  "version": "1.0.0",
+  "description": "pack utils module as npm",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \\\"No test specified\\\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/linhnt2803/lt-utils.git"
+  },
+  "keywords": [
+    "utils",
+    "object utils"
+  ],
+  "author": "linhnt2803",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/linhnt2803/lt-utils/issues"
+  },
+  "homepage": "https://github.com/linhnt2803/lt-utils#readme"
+}
