@@ -27,21 +27,29 @@ function toSlug(s) {
     .replace(/-+/gi, '-').toLowerCase()
 }
 
-String.prototype.upperFirst = function() {
-  return upperFirst(this)
-}
+Object.defineProperty(String.prototype, 'upperFirst', {
+  value: function() {
+    return upperFirst(this)
+  }
+})
 
-String.prototype.lowerFirst = function() {
-  return lowerFirst(this)
-}
+Object.defineProperty(String.prototype, 'lowerFirst', {
+  value: function() {
+    return lowerFirst(this)
+  }
+})
 
-String.prototype.camelize = function() {
-  return camelize(this)
-}
+Object.defineProperty(String.prototype, 'camelize', {
+  value: function() {
+    return camelize(this)
+  }
+})
 
-String.prototype.toSlog = function() {
-  return toSlug(this)
-}
+Object.defineProperty(String.prototype, 'toSlug', {
+  value: function() {
+    return toSlug(this)
+  }
+})
 
 module.exports = {
   upperFirst,

@@ -126,21 +126,29 @@ function _deepClone(source, target) {
   }
 }
 
-Object.prototype.setProp = function(destination, value) {
-  return setProp(this, destination, value)
-}
+Object.defineProperty(Object.prototype, 'setProp', {
+  value: function(destination, value) {
+    return setProp(this, destination, value)
+  }
+})
 
-Object.prototype.getProp = function(...destination) {
-  return getProp(this, ...destination)
-}
+Object.defineProperty(Object.prototype, 'getProp', {
+  value: function(...destination) {
+    return getProp(this, ...destination)
+  }
+})
 
-Object.prototype.bindProp = function(source, keys) {
-  return bindProp(this, source, keys)
-}
+Object.defineProperty(Object.prototype, 'bindProp', {
+  value: function(source, keys) {
+    return bindProp(this, source, keys)
+  }
+})
 
-Object.prototype.clone = function() {
-  return clone(this)
-}
+Object.defineProperty(Object.prototype, 'clone', {
+  value: function() {
+    return clone(this)
+  }
+})
 
 module.exports = {
   getProp,

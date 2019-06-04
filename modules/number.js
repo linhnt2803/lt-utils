@@ -6,9 +6,11 @@ function clamp(number, min, max) {
   return number < min ? min : number > max ? max : number
 }
 
-Number.prototype.clamp = function(min, max) {
-  return clamp(this, min, max)
-}
+Object.defineProperty(Number.prototype, 'clamp', {
+  value: function(min, max) {
+    return clamp(this, min, max)
+  }
+})
 
 module.exports = {
   clamp
