@@ -146,13 +146,13 @@ function _deepClone(source, target) {
  * @param {Object} source 
  * @param {String} delimiter 
  */
-function flat(source = {}, delimiter = '.') {
+function flatProp(source = {}, delimiter = '.') {
   let result = {}
   for (let key in source) {
     if (!source.hasOwnProperty(key)) continue
     let value = source[key]
     if (value instanceof Object) {
-      let flatValue = flat(value)
+      let flatValue = flatProp(value)
       for (let childKey in flatValue) {
         result[`${key}${delimiter}${childKey}`] = flatValue[childKey]
       }
@@ -170,7 +170,7 @@ function flat(source = {}, delimiter = '.') {
  * @param {Object} source 
  * @param {String} delimiter 
  */
-function deFlat(source = {}, delimiter = '.') {
+function deFlatProp(source = {}, delimiter = '.') {
   let result = {}
   let nesteds = {}
   for(let key in source) {
@@ -189,7 +189,7 @@ function deFlat(source = {}, delimiter = '.') {
   }
   for(let key in nesteds) {
     let value = nesteds[key]
-    result[key] = deFlat(value)
+    result[key] = deFlatProp(value)
   }
   return result
 }
@@ -235,23 +235,23 @@ Object.defineProperty(Object.prototype, 'clone', {
   }
 })
 
-Object.defineProperty(Object.prototype, 'flat', {
+Object.defineProperty(Object.prototype, 'flatProp', {
   /**
    * @summary call flat on this
    * @param {String} delimiter 
    */
   value: function(delimiter) {
-    return flat(this, delimiter)
+    return flatProp(this, delimiter)
   }
 })
 
-Object.defineProperty(Object.prototype, 'deFlat', {
+Object.defineProperty(Object.prototype, 'deFlatProp', {
   /**
    * @summary call deFlat on this
    * @param {String} delimiter 
    */
   value: function(delimiter) {
-    return deFlat(this, delimiter)
+    return deFlatProp(this, delimiter)
   }
 })
 
@@ -260,6 +260,6 @@ module.exports = {
   setProp,
   bindProp,
   clone,
-  flat,
-  deFlat
+  flatProp,
+  deFlatProp
 }
