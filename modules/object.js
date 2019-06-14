@@ -49,7 +49,7 @@ function _getProp(obj, destination) {
   if (obj && typeof destination == "string") {
     if (destination == "this") return obj
     let arr = destination.split(".")
-    while (arr.length && (obj = obj[arr.shift()])) {}
+    while (arr.length && (obj = obj[arr.shift()])) { }
     return obj
   }
   return null
@@ -69,6 +69,7 @@ function _getProp(obj, destination) {
  * @returns (obj[destination] = value) || null
  * @param {Object} obj
  * @param {String} destination
+ * @param {any} value
  */
 function setProp(obj, destination, value) {
   if (obj && typeof destination == "string") {
@@ -138,27 +139,119 @@ function _deepClone(source, target) {
   }
 }
 
+/**
+ * make a flat Object from source
+ * Ex: flat({ a: 1, b: { c: 2, d: 3 } }) = { a: 1, 'b.c': 2, 'b.d': 3 }
+ * 
+ * @param {Object} source 
+ * @param {String} delimiter 
+ */
+function flat(source = {}, delimiter = '.') {
+  let result = {}
+  for (let key in source) {
+    if (!source.hasOwnProperty(key)) continue
+    let value = source[key]
+    if (value instanceof Object) {
+      let flatValue = flat(value)
+      for (let childKey in flatValue) {
+        result[`${key}${delimiter}${childKey}`] = flatValue[childKey]
+      }
+    } else {
+      result[key] = value
+    }
+  }
+  return result
+}
+
+/**
+ * make a flat Object from source
+ * Ex: deFlat({ a: 1, 'b.c': 2, 'b.d': 3 }) = { a: 1, b: { c: 2, d: 3 } }
+ * 
+ * @param {Object} source 
+ * @param {String} delimiter 
+ */
+function deFlat(source = {}, delimiter = '.') {
+  let result = {}
+  let nesteds = {}
+  for(let key in source) {
+    if(!source.hasOwnProperty(key)) continue
+    let value = source[key]
+    if(!key.includes(delimiter)) {
+      result[key] = value
+    } else {
+      let childKey = key.substring(0, key.indexOf(delimiter))
+      let nestedKey = key.substring(key.indexOf(delimiter) + 1)
+      if(!nesteds[childKey]) {
+        nesteds[childKey] = {}
+      }
+      nesteds[childKey][nestedKey] = value
+    }
+  }
+  for(let key in nesteds) {
+    let value = nesteds[key]
+    result[key] = deFlat(value)
+  }
+  return result
+}
+
 Object.defineProperty(Object.prototype, 'setProp', {
-  value: function(destination, value) {
+  /**
+   * @summary call setProp on this
+   * @param {String} destination 
+   * @param {any} value 
+   */
+  value: function (destination, value) {
     return setProp(this, destination, value)
   }
 })
 
 Object.defineProperty(Object.prototype, 'getProp', {
-  value: function(...destination) {
+  /**
+   * @summary call getProp on this
+   * @param {...String} destination 
+   */
+  value: function (...destination) {
     return getProp(this, ...destination)
   }
 })
 
 Object.defineProperty(Object.prototype, 'bindProp', {
-  value: function(source, keys) {
+  /**
+   * @summary call bindProp on this
+   * @param {Array} source 
+   * @param {String | Array | undefined} keys 
+   */
+  value: function (source, keys) {
     return bindProp(this, source, keys)
   }
 })
 
 Object.defineProperty(Object.prototype, 'clone', {
-  value: function() {
+  /**
+   * @summary call clone on this
+   */
+  value: function () {
     return clone(this)
+  }
+})
+
+Object.defineProperty(Object.prototype, 'flat', {
+  /**
+   * @summary call flat on this
+   * @param {String} delimiter 
+   */
+  value: function(delimiter) {
+    return flat(this, delimiter)
+  }
+})
+
+Object.defineProperty(Object.prototype, 'deFlat', {
+  /**
+   * @summary call deFlat on this
+   * @param {String} delimiter 
+   */
+  value: function(delimiter) {
+    return deFlat(this, delimiter)
   }
 })
 
@@ -166,5 +259,7 @@ module.exports = {
   getProp,
   setProp,
   bindProp,
-  clone
+  clone,
+  flat,
+  deFlat
 }
