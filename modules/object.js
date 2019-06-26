@@ -13,12 +13,24 @@
  *    getProp({ a: { b: 1 } }, 'a.b.c.d') == null
  *    getProp({ a: { b: 1 } }, 'a.e', 'x.y') == null
  *
- * @returns obj[destinations[0]] || obj[destinations[1]] || .. || null
+ * @returns {any}
  * @param {Object} obj
- * @param {...String} destination
+ * @param {...String | [String]} destinations
+ * @param {any} defaultValue
  */
 function getProp(obj, ...destinations) {
+  let defaultValue = null
   if (obj) {
+    if(destinations.length > 1 && typeof destinations[destinations.length - 1] != 'string') {
+      defaultValue = destinations[destinations.length - 1]
+      destinations.pop()
+    }
+    if(destinations[0] instanceof Array) {
+      if(destinations.length > 1) {
+        defaultValue = destinations[1]
+        destinations = destinations[0]
+      }
+    }
     while (destinations.length) {
       let value = _getProp(obj, destinations[0])
       if (value) {
@@ -28,7 +40,7 @@ function getProp(obj, ...destinations) {
       }
     }
   }
-  return null
+  return defaultValue
 }
 
 /**
