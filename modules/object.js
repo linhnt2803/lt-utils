@@ -206,6 +206,19 @@ function deFlatProp(source = {}, delimiter = '.') {
   return result
 }
 
+function mapProp(obj = {}, formatter = (key, value) => value, filter = () => true) {
+  if(obj instanceof Object) {
+    let result = {}
+    for(let [key, value] of Object.entries(obj)) {
+      if(obj.hasOwnProperty(key) && filter(key, value)) {
+        result[key] = formatter(key, value)
+      }
+    }
+    return result
+  }
+  return null
+}
+
 Object.defineProperty(Object.prototype, 'setProp', {
   /**
    * @summary call setProp on this
@@ -222,8 +235,8 @@ Object.defineProperty(Object.prototype, 'getProp', {
    * @summary call getProp on this
    * @param {...String} destination 
    */
-  value: function (...destination) {
-    return getProp(this, ...destination)
+  value: function (...destinations) {
+    return getProp(this, ...destinations)
   }
 })
 
@@ -267,11 +280,18 @@ Object.defineProperty(Object.prototype, 'deFlatProp', {
   }
 })
 
+Object.defineProperty(Object.prototype, 'mapProp', {
+  value: function(formatter, filter) {
+    return mapProp(this, formatter, filter)
+  }
+})
+
 module.exports = {
   getProp,
   setProp,
   bindProp,
   clone,
   flatProp,
-  deFlatProp
+  deFlatProp,
+  mapProp
 }
