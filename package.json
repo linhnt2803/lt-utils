@@ -1,6 +1,6 @@
 {
   "name": "lt-utils",
-  "version": "1.5.0",
+  "version": "2.0.0",
   "description": "pack utils module as npm",
   "main": "index.js",
   "scripts": {
