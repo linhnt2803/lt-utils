@@ -2,23 +2,23 @@
  * @summary function return the value match with destination path in object,
  * @description
  * Ex:
- *    getProp({ a: { b: 1 } }, 'a.b') == obj.a.b == 1
+ *    obGet({ a: { b: 1 } }, 'a.b') == obj.a.b == 1
  *
  * if there are many destinations then return first value found
  * Ex:
- *    getProp({ a: { b: 1, c: 1 } }, 'a.x', 'a.b', 'a.c') == obj.a.b == 1
+ *    obGet({ a: { b: 1, c: 1 } }, 'a.x', 'a.b', 'a.c') == obj.a.b == 1
  *
  * if all destinations are not valid in object, then return null
  * Ex:
- *    getProp({ a: { b: 1 } }, 'a.b.c.d') == null
- *    getProp({ a: { b: 1 } }, 'a.e', 'x.y') == null
+ *    obGet({ a: { b: 1 } }, 'a.b.c.d') == null
+ *    obGet({ a: { b: 1 } }, 'a.e', 'x.y') == null
  *
  * @returns {any}
  * @param {Object} obj
  * @param {...String | [String]} destinations
  * @param {any} defaultValue
  */
-function getProp(obj, ...destinations) {
+function obGet(obj, ...destinations) {
   let defaultValue = null
   if (obj) {
     if(destinations.length > 1 && typeof destinations[destinations.length - 1] != 'string') {
@@ -32,7 +32,7 @@ function getProp(obj, ...destinations) {
       }
     }
     while (destinations.length) {
-      let value = _getProp(obj, destinations[0])
+      let value = _obGet(obj, destinations[0])
       if (value) {
         return value
       } else {
@@ -47,17 +47,17 @@ function getProp(obj, ...destinations) {
  * @summary function return the value match with destination in object,
  * @description
  * Ex:
- *    getProp({ a: { b: 1 } }, 'a.b') == 1
+ *    obGet({ a: { b: 1 } }, 'a.b') == 1
  *
  * if the destination is not valid in object, then return null
  * Ex:
- *    getProp({ a: { b: 1 } }, 'a.b.c.d') == null
+ *    obGet({ a: { b: 1 } }, 'a.b.c.d') == null
  *
  * @returns obj[destination] || null
  * @param {Object} obj
  * @param {String} destination
  */
-function _getProp(obj, destination) {
+function _obGet(obj, destination) {
   if (obj && typeof destination == "string") {
     if (destination == "this") return obj
     let arr = destination.split(".")
@@ -71,19 +71,19 @@ function _getProp(obj, destination) {
  * @summary function set the value to object destination
  * @description
  * Ex:
- *    setProp({ a: { b: 1 } }, 'a.c', 2) == 2
+ *    obSet({ a: { b: 1 } }, 'a.c', 2) == 2
  *    //obj = { a: { b: 1, c: 2 } }
  *
  * if the destination is not valid in object, then return null
  * Ex:
- *    setProp({ a: { b: 1 } }, 'a.x.y', 2) == null
+ *    obSet({ a: { b: 1 } }, 'a.x.y', 2) == null
  *
  * @returns (obj[destination] = value) || null
  * @param {Object} obj
  * @param {String} destination
  * @param {any} value
  */
-function setProp(obj, destination, value) {
+function obSet(obj, destination, value) {
   if (obj && typeof destination == "string") {
     let arr = destination.split(".")
     if (arr.length == 1) {
@@ -110,7 +110,7 @@ function setProp(obj, destination, value) {
  * @param {Array} source 
  * @param {String | Array | undefined} keys 
  */
-function bindProp(target, source, keys) {
+function obBind(target, source, keys) {
   if (!(target instanceof Object) || !(source instanceof Object)) return
   let bindKeys = (keys == '*')
     ? Object.keys(source)
@@ -127,7 +127,7 @@ function bindProp(target, source, keys) {
  * @summary equivalent to JSON.parse(JSON.stringify(source))
  * @param {Object} source
  */
-function clone(source) {
+function obClone(source) {
   if (typeof source !== "object") return source
   const target = source instanceof Array ? [] : {}
   _deepClone(source, target)
@@ -158,13 +158,13 @@ function _deepClone(source, target) {
  * @param {Object} source 
  * @param {String} delimiter 
  */
-function flatProp(source = {}, delimiter = '.') {
+function obFlat(source = {}, delimiter = '.') {
   let result = {}
   for (let key in source) {
     if (!source.hasOwnProperty(key)) continue
     let value = source[key]
     if (value instanceof Object) {
-      let flatValue = flatProp(value)
+      let flatValue = obFlat(value)
       for (let childKey in flatValue) {
         result[`${key}${delimiter}${childKey}`] = flatValue[childKey]
       }
@@ -182,7 +182,7 @@ function flatProp(source = {}, delimiter = '.') {
  * @param {Object} source 
  * @param {String} delimiter 
  */
-function deFlatProp(source = {}, delimiter = '.') {
+function obDeFlat(source = {}, delimiter = '.') {
   let result = {}
   let nesteds = {}
   for(let key in source) {
@@ -201,12 +201,12 @@ function deFlatProp(source = {}, delimiter = '.') {
   }
   for(let key in nesteds) {
     let value = nesteds[key]
-    result[key] = deFlatProp(value)
+    result[key] = obDeFlat(value)
   }
   return result
 }
 
-function mapProp(obj = {}, formatter = (key, value) => value, filter = () => true) {
+function obMap(obj = {}, formatter = (key, value) => value, filter = () => true) {
   if(obj instanceof Object) {
     let result = {}
     for(let [key, value] of Object.entries(obj)) {
@@ -219,79 +219,79 @@ function mapProp(obj = {}, formatter = (key, value) => value, filter = () => tru
   return null
 }
 
-Object.defineProperty(Object.prototype, 'setProp', {
+Object.defineProperty(Object.prototype, 'obSet', {
   /**
-   * @summary call setProp on this
+   * @summary call obSet on this
    * @param {String} destination 
    * @param {any} value 
    */
   value: function (destination, value) {
-    return setProp(this, destination, value)
+    return obSet(this, destination, value)
   }
 })
 
-Object.defineProperty(Object.prototype, 'getProp', {
+Object.defineProperty(Object.prototype, 'obGet', {
   /**
-   * @summary call getProp on this
+   * @summary call obGet on this
    * @param {...String} destination 
    */
   value: function (...destinations) {
-    return getProp(this, ...destinations)
+    return obGet(this, ...destinations)
   }
 })
 
-Object.defineProperty(Object.prototype, 'bindProp', {
+Object.defineProperty(Object.prototype, 'obBind', {
   /**
-   * @summary call bindProp on this
+   * @summary call obBind on this
    * @param {Array} source 
    * @param {String | Array | undefined} keys 
    */
   value: function (source, keys) {
-    return bindProp(this, source, keys)
+    return obBind(this, source, keys)
   }
 })
 
-Object.defineProperty(Object.prototype, 'clone', {
+Object.defineProperty(Object.prototype, 'obClone', {
   /**
-   * @summary call clone on this
+   * @summary call obClone on this
    */
   value: function () {
-    return clone(this)
+    return obClone(this)
   }
 })
 
-Object.defineProperty(Object.prototype, 'flatProp', {
+Object.defineProperty(Object.prototype, 'obFlat', {
   /**
    * @summary call flat on this
    * @param {String} delimiter 
    */
   value: function(delimiter) {
-    return flatProp(this, delimiter)
+    return obFlat(this, delimiter)
   }
 })
 
-Object.defineProperty(Object.prototype, 'deFlatProp', {
+Object.defineProperty(Object.prototype, 'obDeFlat', {
   /**
    * @summary call deFlat on this
    * @param {String} delimiter 
    */
   value: function(delimiter) {
-    return deFlatProp(this, delimiter)
+    return obDeFlat(this, delimiter)
   }
 })
 
-Object.defineProperty(Object.prototype, 'mapProp', {
+Object.defineProperty(Object.prototype, 'obMap', {
   value: function(formatter, filter) {
-    return mapProp(this, formatter, filter)
+    return obMap(this, formatter, filter)
   }
 })
 
 module.exports = {
-  getProp,
-  setProp,
-  bindProp,
-  clone,
-  flatProp,
-  deFlatProp,
-  mapProp
+  obGet,
+  obSet,
+  obBind,
+  obClone,
+  obFlat,
+  obDeFlat,
+  obMap
 }

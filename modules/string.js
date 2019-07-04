@@ -1,18 +1,18 @@
-function upperFirst(s) {
+function stUpperFirst(s) {
   s = String(typeof s == 'number' ? s : (s || ''))
   return s.charAt(0).toUpperCase() + s.slice(1)
 }
 
-function lowerFirst(s) {
+function stLowerFirst(s) {
   s = String(typeof s == 'number' ? s : (s || ''))
   return s.charAt(0).toLowerCase() + s.slice(1)
 }
 
-function camelize(s) {
-  return lowerFirst(s.replace(/[_\W]+(.)/g, (match, chr) => chr.toUpperCase()))
+function stCamelize(s) {
+  return stLowerFirst(s.replace(/[_\W]+(.)/g, (match, chr) => chr.toUpperCase()))
 }
 
-function toSlug(s) {
+function stSlug(s) {
   s = String(typeof s == 'number' ? s : (s || '')).trim()
   return s.replace(/á|à|ả|ạ|ã|ă|ắ|ằ|ẳ|ẵ|ặ|â|ấ|ầ|ẩ|ẫ|ậ/gi, 'a')
     .replace(/é|è|ẻ|ẽ|ẹ|ê|ế|ề|ể|ễ|ệ/gi, 'e')
@@ -27,33 +27,33 @@ function toSlug(s) {
     .replace(/-+/gi, '-').toLowerCase()
 }
 
-Object.defineProperty(String.prototype, 'upperFirst', {
+Object.defineProperty(String.prototype, 'stUpperFirst', {
   value: function() {
-    return upperFirst(this)
+    return stUpperFirst(this)
   }
 })
 
-Object.defineProperty(String.prototype, 'lowerFirst', {
+Object.defineProperty(String.prototype, 'stLowerFirst', {
   value: function() {
-    return lowerFirst(this)
+    return stLowerFirst(this)
   }
 })
 
-Object.defineProperty(String.prototype, 'camelize', {
+Object.defineProperty(String.prototype, 'stCamelize', {
   value: function() {
-    return camelize(this)
+    return stCamelize(this)
   }
 })
 
-Object.defineProperty(String.prototype, 'toSlug', {
+Object.defineProperty(String.prototype, 'stSlug', {
   value: function() {
-    return toSlug(this)
+    return stSlug(this)
   }
 })
 
 module.exports = {
-  upperFirst,
-  lowerFirst,
-  camelize,
-  toSlug
+  stUpperFirst,
+  stLowerFirst,
+  stCamelize,
+  stSlug
 }
